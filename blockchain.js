@@ -62,6 +62,8 @@ class Transaction {
 
 
 
+
+
 class Block {
     constructor(timestamp, transactions = [], previousHash = '') {
         this.timestamp = timestamp;
@@ -73,12 +75,6 @@ class Block {
         this.nonce = 0;
     }
 
-    // createMerkleRoot() {
-    //     const leaves = this.transactions.map(tx => SHA256(JSON.stringify(tx)).toString());
-    //     const tree = new MerkleTree(leaves, SHA256);
-    //     this.tree = tree;  // Store the tree for proof generation
-    //     return tree.getRoot().toString('hex');
-    // }
     createMerkleRoot() {
         const leaves = this.transactions.map(tx => tx.calculateHash());
         const tree = new MerkleTree(leaves, SHA256);
@@ -86,11 +82,6 @@ class Block {
         return tree.getRoot().toString('hex');
     }    
 
-    // createBloomFilter() {
-    //     const filter = new BloomFilter(20, 4);
-    //     this.transactions.forEach(tx => filter.add(JSON.stringify(tx)));
-    //     return filter;
-    // }
     createBloomFilter() {
         const filter = new BloomFilter(20, 4);
         this.transactions.forEach(tx => filter.add(tx.calculateHash()));
@@ -113,36 +104,12 @@ class Block {
         return this.bloomFilter.has(transaction.calculateHash());
     }       
 
-    // generateProof(transaction) {
-    //     const hash = SHA256(JSON.stringify(transaction)).toString();
-    //     return this.tree.getProof(Buffer.from(hash, 'hex'));
-    // }
-
-    // verifyTransaction(transaction, proof) {
-    //     const hash = SHA256(JSON.stringify(transaction)).toString();
-    //     const rootBuffer = Buffer.from(this.merkleRoot, 'hex');
-    //     const hashBuffer = Buffer.from(hash, 'hex');
-    //     return this.tree.verify(proof, hashBuffer, rootBuffer);
-    // }
-
-    // generateProof(transaction) {
-    //     const transactionHash = transaction.calculateHash();
-    //     const proof = this.tree.getProof(Buffer.from(transactionHash, 'hex'));
-    //     //console.log('Generated proof:', proof); // Debugging
-    //     return proof;
-    // }
     generateProof(transaction) {
         const transactionHash = transaction.calculateHash();
         const proof = this.tree.getProof(Buffer.from(transactionHash, 'hex'));
         return proof;
     }     
 
-    // verifyTransaction(transaction, proof) {
-    //     const transactionHash = SHA256(JSON.stringify(transaction)).toString();
-    //     const verificationResult = this.tree.verify(proof, Buffer.from(transactionHash, 'hex'), Buffer.from(this.merkleRoot, 'hex'));
-    //     //console.log('Verification result:', verificationResult, 'for transaction:', transactionHash); // Debugging
-    //     return verificationResult;
-    // }
     verifyTransaction(transaction, proof) {
         const transactionHash = transaction.calculateHash();
         const verificationResult = this.tree.verify(proof, Buffer.from(transactionHash, 'hex'), Buffer.from(this.merkleRoot, 'hex'));
@@ -156,6 +123,15 @@ class Block {
         return true;
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -193,13 +169,17 @@ class Mempool {
         return this.transactions;
     }
 
-    // clear() {
-    //     this.transactions = [];
-    // }
     clearTransactions(transactions) {
         this.transactions = this.transactions.filter(tx => !transactions.includes(tx));
     }
 }
+
+
+
+
+
+
+
 
 
 
@@ -240,12 +220,6 @@ class Blockchain {
         return this.burnedCoins;
     }
 
-    // createGenesisBlock() {
-    //     const initialTransactions = this.createInitialTransactions();
-    //     const genesisBlock = new Block(Date.now(), initialTransactions, '0');
-    //     this.chain.push(genesisBlock); // Add genesis block to the chain
-    //     //console.log('Genesis block created:', genesisBlock);
-    // }
     createGenesisBlock() {
         if (this.chain.length === 0) {
             const initialTransactions = this.createInitialTransactions();
@@ -256,19 +230,6 @@ class Blockchain {
         }
     }
 
-    // createInitialTransactions() {
-    //     const transactions = [];
-    //     this.wallets.forEach(wallet => {
-    //         const transaction = new Transaction(null, wallet, this.initialBalance);
-    //         transactions.push(transaction);
-    //         this.balances[wallet] = this.initialBalance; // Set initial balance for each wallet
-    //     });
-    //     return transactions;
-    // }
-
-    // addWallet(address) {
-    //     this.wallets.add(address);
-    // }
     createInitialTransactions() {
         const transactions = [];
         this.wallets.forEach(wallet => {
@@ -280,12 +241,6 @@ class Blockchain {
         return transactions;
     }
 
-    // addWallet(address) {
-    //     this.wallets.add(address);
-    //     if (!this.balances[address]) {
-    //         this.balances[address] = this.initialBalance; // Initialize balance for new wallets
-    //     }
-    // }
     addWallet(address) {
         this.wallets.add(address);
         if (!this.balances[address]) {
@@ -298,17 +253,6 @@ class Blockchain {
         return this.chain[this.chain.length - 1];
     }
 
-    // minePendingTransactions(miningRewardAddress) {
-    //     while (this.mempool.transactions.length > 0) {
-    //         const transactionsToMine = this.mempool.transactions.splice(0, 4);
-    //         const block = new Block(Date.now(), transactionsToMine, this.getLatestBlock().hash);
-    //         block.mineBlock(this.difficulty);
-    //         this.chain.push(block);
-    //         this.updateBalances(transactionsToMine, miningRewardAddress); // Pass mining address to update balances with miner fee
-    //         this.balances[miningRewardAddress] = (this.balances[miningRewardAddress] || 0) + this.miningReward; // Add mining reward to the miner's balance
-    //         console.log('Block successfully mined!');
-    //     }
-    // }
     minePendingTransactions(miningRewardAddress) {
         while (this.mempool.transactions.length > 0) {
             const transactionsToMine = this.mempool.transactions.splice(0, 4);
@@ -341,37 +285,10 @@ class Blockchain {
         this.mempool.addTransaction(transaction);
     }
     
-    // getBalanceOfAddress(address) {
-    //     let balance = 0;
-    //     // let balance = this.initialBalance;
-
-    //     for (const block of this.chain) {
-    //         for (const trans of block.transactions) {
-    //             if (trans.fromAddress === address) {
-    //                 balance -= trans.amount + trans.fee;    
-    //             }
-    //             if (trans.toAddress === address) {
-    //                 balance += trans.amount;
-    //             }
-    //         }
-    //     }
-    //     return balance;
-    // }
     getBalanceOfAddress(address) {
         return this.balances[address] || 0; // Return the balance from the dictionary
     }
 
-    // updateBalances(transactions, minerAddress) {
-    //     transactions.forEach(tx => {
-    //         if (tx.fromAddress) {
-    //             this.balances[tx.fromAddress] -= tx.amount + tx.fee + tx.minerFee;
-    //         }
-    //         this.balances[tx.toAddress] += tx.amount;
-    //         if (tx.minerFee > 0) {
-    //             this.balances[minerAddress] = (this.balances[minerAddress] || 0) + tx.minerFee;
-    //         }
-    //     });
-    // }
     updateBalances(transactions, minerAddress) {
         transactions.forEach(tx => {
             if (tx.fromAddress) {
@@ -417,16 +334,6 @@ class Blockchain {
         return false;
     }
 
-    // verifyTransactionInBlock(transaction) {
-    //     for (const block of this.chain) {
-    //         if (block.hasTransaction(transaction)) {
-    //             const proof = block.generateProof(transaction);
-    //             const verified = block.verifyTransaction(transaction, proof);
-    //             return verified;
-    //         }
-    //     }
-    //     return false;
-    // }
     verifyTransactionInBlock(transaction) {
         const blockContainingTx = this.chain.find(block =>
             block.transactions.some(tx => tx.calculateHash() === transaction.calculateHash())
