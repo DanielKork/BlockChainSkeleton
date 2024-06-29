@@ -226,7 +226,7 @@ class Blockchain {
             const genesisBlock = new Block(Date.now(), initialTransactions, '0');
             this.chain.push(genesisBlock); // Add genesis block to the chain
             this.updateBalances(initialTransactions); // Initialize balances with the genesis block transactions
-            console.log('Genesis block created:', genesisBlock);    
+            //console.log('Genesis block created:', genesisBlock);    
         }
     }
 
