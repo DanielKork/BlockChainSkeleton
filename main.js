@@ -58,11 +58,7 @@ let micaNet = new Blockchain();
 
 micaNet.addWallet(Wallet1);
 micaNet.addWallet('Wallet2');
-//micaNet.addWallet('Wallet3');
 micaNet.addWallet(myWalletAddress);
-
-// console.log('Creating Genesis Block with initial distribution...');
-// micaNet.createGenesisBlock();
 
 console.log('Balance of address1:', micaNet.getBalanceOfAddress(Wallet1));
 console.log('Balance of address2:', micaNet.getBalanceOfAddress('Wallet2'));
@@ -109,7 +105,6 @@ if (micaNet.hasTransaction(txToCheck)) {
 
 console.log('Updated balance of Wallet1:', micaNet.getBalanceOfAddress(Wallet1));
 console.log('Updated balance of Wallet2:', micaNet.getBalanceOfAddress('Wallet2'));
-//console.log('Updated balance of Wallet3:', micaNet.getBalanceOfAddress('Wallet3'));
 console.log('Updated balance of my wallet:', micaNet.getBalanceOfAddress(myWalletAddress));
 
 console.log('');
