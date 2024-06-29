@@ -1,3 +1,4 @@
 node_modules
-myKey.txt
 
+# Ignore myKey.txt file
+myKey.txt
