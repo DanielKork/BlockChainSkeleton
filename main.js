@@ -18,9 +18,9 @@ console.log('Balance of address1:', micaNet.getBalanceOfAddress(Wallet1));
 console.log('Balance of address2:', micaNet.getBalanceOfAddress('Wallet2'));
 console.log('Balance of my wallet:', micaNet.getBalanceOfAddress(myWalletAddress));
 
-for (let i = 2; i <= 4; i++) {
+for (let i = 1; i <= 30; i++) {
     const toAddress = `Wallet${i}`;
-    const tx = new Transaction(Wallet1, toAddress, i * 10);
+    const tx = new Transaction(Wallet1, toAddress, 1);
     tx.signTransaction(Wallet1Key);
     micaNet.addTransaction(tx);
     console.log(`Added transaction from ${Wallet1} to ${toAddress} for amount ${i * 10}`);
@@ -34,7 +34,7 @@ micaNet.chain.forEach((block, index) => {
     console.log(block.transactions);
 });
 
-const txToCheck = new Transaction(Wallet1, 'Wallet2', 50);
+const txToCheck = new Transaction(Wallet1, 'Wallet2', 10);
 txToCheck.signTransaction(Wallet1Key);
 micaNet.addTransaction(txToCheck);
 
